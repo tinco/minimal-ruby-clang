@@ -21,13 +21,18 @@ extension_name = 'mytest'
 # The destination
 dir_config(extension_name)
 
-$CXXFLAGS += " -std=c++11 "
+cxxflags = %w[
+  -std=c++11
+  -Wno-reserved-user-defined-literal
+]
 
-find_header("clang/AST/ASTContext.h", "/Users/tinco/Source/amirrajan/BridgeSupport/OBJROOT/clang-70/darwin-x86_64/ROOT/usr/local/include")
+$CXXFLAGS += " #{cxxflags.join(" ")} "
 
-llvm_libs_path = "/Users/tinco/Source/amirrajan/BridgeSupport/OBJROOT/clang-70/darwin-x86_64/ROOT/usr/local/lib"
+CLANG_PREFIX = ENV['CLANGHOME'] || "../BridgeSupport/OBJROOT/clang-70/darwin-x86_64/ROOT/usr/local/"
 
-$LDFLAGS += " -L#{llvm_libs_path} "
+find_header("clang/AST/ASTContext.h", CLANG_PREFIX + "/include")
+
+$LDFLAGS += " -L#{CLANG_PREFIX}/lib "
 
 [
     'clangCodeGen',
